@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import "./App.css";
 
 type TranscriptLine = {
@@ -14,19 +14,10 @@ function App() {
   const [transcriptLines, setTranscriptLines] = useState<TranscriptLine[]>([]);
   const [error, setError] = useState("");
   const [recordingTime, setRecordingTime] = useState(0);
-  const [language, setLanguage] = useState("ja");
-  const [languages, setLanguages] = useState<Record<string, string>>({});
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    fetch("/api/languages")
-      .then((res) => res.json())
-      .then(setLanguages)
-      .catch(() => {});
-  }, []);
 
   const startRecording = useCallback(async () => {
     setError("");
@@ -58,7 +49,7 @@ function App() {
     } catch {
       setError("マイクへのアクセスが許可されませんでした。");
     }
-  }, [language]);
+  }, []);
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
@@ -77,7 +68,6 @@ function App() {
 
     const formData = new FormData();
     formData.append("file", blob, "recording.webm");
-    formData.append("language", language);
 
     try {
       const res = await fetch("/api/transcribe", {
@@ -111,22 +101,6 @@ function App() {
       <p className="subtitle">Moonshine AI - ローカル音声認識</p>
 
       <div className="recorder">
-        <div className="language-select">
-          <label htmlFor="lang">言語:</label>
-          <select
-            id="lang"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            disabled={isRecording || isTranscribing}
-          >
-            {Object.entries(languages).map(([code, name]) => (
-              <option key={code} value={code}>
-                {name} ({code})
-              </option>
-            ))}
-          </select>
-        </div>
-
         {isRecording && (
           <div className="recording-indicator">
             <span className="pulse" />
