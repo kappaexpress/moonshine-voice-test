@@ -1,0 +1,17 @@
+{
+  "name": "speak-to-text-web-test-20260311",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    // "ghcr.io/devcontainers/features/python:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code"
+      ]
+    }
+  },
+  "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash"
+}
