@@ -14,7 +14,7 @@ function App() {
   const [transcriptLines, setTranscriptLines] = useState<TranscriptLine[]>([]);
   const [error, setError] = useState("");
   const [recordingTime, setRecordingTime] = useState(0);
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("ja");
   const [languages, setLanguages] = useState<Record<string, string>>({});
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -107,12 +107,12 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Voice Transcriber</h1>
-      <p className="subtitle">Moonshine AI - Local Speech-to-Text</p>
+      <h1>音声文字起こし</h1>
+      <p className="subtitle">Moonshine AI - ローカル音声認識</p>
 
       <div className="recorder">
         <div className="language-select">
-          <label htmlFor="lang">Language:</label>
+          <label htmlFor="lang">言語:</label>
           <select
             id="lang"
             value={language}
@@ -130,7 +130,7 @@ function App() {
         {isRecording && (
           <div className="recording-indicator">
             <span className="pulse" />
-            Recording... {formatTime(recordingTime)}
+            録音中... {formatTime(recordingTime)}
           </div>
         )}
 
@@ -141,11 +141,11 @@ function App() {
               onClick={startRecording}
               disabled={isTranscribing}
             >
-              Start Recording
+              録音開始
             </button>
           ) : (
             <button className="btn stop" onClick={stopRecording}>
-              Stop Recording
+              録音停止
             </button>
           )}
         </div>
@@ -153,7 +153,7 @@ function App() {
         {isTranscribing && (
           <div className="transcribing">
             <div className="spinner" />
-            Transcribing...
+            文字起こし中...
           </div>
         )}
       </div>
@@ -162,12 +162,12 @@ function App() {
 
       {transcriptText && (
         <div className="result">
-          <h2>Transcription</h2>
+          <h2>文字起こし結果</h2>
           <div className="transcript-text">{transcriptText}</div>
 
           {transcriptLines.length > 0 && (
             <div className="transcript-lines">
-              <h3>Details</h3>
+              <h3>詳細</h3>
               {transcriptLines.map((line, i) => (
                 <div key={i} className="line">
                   <span className="timestamp">{line.start.toFixed(1)}s</span>
