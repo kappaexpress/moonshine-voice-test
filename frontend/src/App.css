@@ -160,6 +160,24 @@ h1 {
   min-width: 50px;
 }
 
+.in-progress {
+  opacity: 0.7;
+}
+
+.typing-indicator {
+  color: #646cff;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.placeholder {
+  color: #666;
+  font-style: italic;
+}
+
 @media (prefers-color-scheme: light) {
   .recorder, .result {
     background: #f5f5f5;

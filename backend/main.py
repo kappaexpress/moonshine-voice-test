@@ -1,6 +1,7 @@
 import io
+import asyncio
 import numpy as np
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydub import AudioSegment
 from moonshine_voice import Transcriber, get_model_for_language
@@ -16,6 +17,43 @@ app.add_middleware(
 
 model_path, model_arch = get_model_for_language("ja")
 transcriber = Transcriber(model_path=model_path, model_arch=model_arch)
+
+
+@app.websocket("/api/ws/transcribe")
+async def websocket_transcribe(websocket: WebSocket):
+    await websocket.accept()
+
+    loop = asyncio.get_running_loop()
+    stream = transcriber.create_stream()
+
+    def on_event(event):
+        try:
+            line = event.line
+            data = {
+                "line_id": str(line.line_id),
+                "text": line.text,
+                "start": line.start_time,
+                "duration": line.duration,
+                "is_complete": line.is_complete,
+            }
+            asyncio.run_coroutine_threadsafe(
+                websocket.send_json(data), loop
+            )
+        except Exception:
+            pass
+
+    stream.add_listener(on_event)
+
+    try:
+        while True:
+            data = await websocket.receive_bytes()
+            samples = np.frombuffer(data, dtype="<f4").tolist()
+            stream.add_audio(samples, 16000)
+    except WebSocketDisconnect:
+        pass
+    finally:
+        stream.remove_listener(on_event)
+        stream.close()
 
 
 @app.post("/api/transcribe")
