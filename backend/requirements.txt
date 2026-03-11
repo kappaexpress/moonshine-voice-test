@@ -1,0 +1,6 @@
+fastapi==0.115.11
+uvicorn==0.34.0
+python-multipart==0.0.20
+pydub==0.25.1
+moonshine-voice==0.0.49
+numpy==1.26.4
