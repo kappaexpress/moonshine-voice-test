@@ -15,5 +15,5 @@
       ]
     }
   },
-  "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash && pip install -r backend/requirements.txt"
+  "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash && pip install -r backend/requirements.txt && cd frontend && npm install"
 }
